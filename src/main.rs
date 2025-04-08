@@ -12,9 +12,15 @@ impl Rotor {
         self.position = (self.position + 1) % 26;
     }
 
-    fn encode(&self, c: char) -> char {
+    fn encode_forward(&self, c: char) -> char {
         let index = (c as u8 - b'A' + self.position as u8) % 26;
         let mapped_index = self.wiring[index as usize];
+        ((mapped_index + 26 - self.position as u8) % 26 + b'A') as char
+    }
+
+    fn encode_backward(&self, c: char) -> char {
+        let index = (c as u8 - b'A' + self.position as u8) % 26;
+        let mapped_index = self.wiring.iter().position(|&x| x == index).unwrap() as u8; // Find reverse mapping
         ((mapped_index + 26 - self.position as u8) % 26 + b'A') as char
     }
 }
@@ -28,5 +34,8 @@ fn main() {
         0,
     );
 
-    println!("{}", rotor.encode('A'));
+    let ouutput1 = rotor.encode_forward('A');
+    let ouutput2 = rotor.encode_backward(ouutput1);
+
+    
 }
